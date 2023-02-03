@@ -1,5 +1,6 @@
 import DefaultAppSyncQueryAdapter from "../src/adapters/DefaultAppSyncQueryAdapter";
 import * as queryBuilder from "./";
+import { trimQueryString } from "./jestHelper";
 
 describe("Query", () => {
   test("generates query", () => {
@@ -696,17 +697,19 @@ describe("Mutation", () => {
       fields: ["id"],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $thought: String) {
   thoughtCreate (name: $name, thought: $thought) {
     id
   }
 }`,
-      variables: {
-        name: "Tyrion Lannister",
-        thought: "I drink and I know things.",
-      },
-    });
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+      })
+    );
   });
 
   test("generates mutation query with alias", () => {
@@ -722,17 +725,19 @@ describe("Mutation", () => {
       fields: ["id"],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $thought: String) {
   myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
     id
   }
 }`,
-      variables: {
-        name: "Tyrion Lannister",
-        thought: "I drink and I know things.",
-      },
-    });
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+      })
+    );
   });
 
   test("generates mutations with the same operation with different alias", () => {
@@ -761,8 +766,9 @@ describe("Mutation", () => {
       },
     ]);
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String, $character: String, $quote: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $thought: String, $character: String, $quote: String) {
   myThoughtCreate: thoughtCreate (name: $name, thought: $thought) {
     id
   }
@@ -770,13 +776,14 @@ describe("Mutation", () => {
     id
   }
 }`,
-      variables: {
-        name: "Tyrion Lannister",
-        thought: "I drink and I know things.",
-        character: "Eddard Stark",
-        quote: "Winter is coming.",
-      },
-    });
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+          character: "Eddard Stark",
+          quote: "Winter is coming.",
+        },
+      })
+    );
   });
 
   test("generates mutation query with required variables", () => {
@@ -790,18 +797,20 @@ describe("Mutation", () => {
       fields: ["userId"],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $email: String!, $password: String!) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $email: String!, $password: String!) {
   userSignup (name: $name, email: $email, password: $password) {
     userId
   }
 }`,
-      variables: {
-        name: "Jon Doe",
-        email: "jon.doe@example.com",
-        password: "123456",
-      },
-    });
+        variables: {
+          name: "Jon Doe",
+          email: "jon.doe@example.com",
+          password: "123456",
+        },
+      })
+    );
   });
 
   test("generates multiple mutations", () => {
@@ -824,8 +833,9 @@ describe("Mutation", () => {
       },
     ]);
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $thought: String, $prayer: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $thought: String, $prayer: String) {
   thoughtCreate (name: $name, thought: $thought) {
     id
   }
@@ -833,12 +843,13 @@ describe("Mutation", () => {
     id
   }
 }`,
-      variables: {
-        name: "Tyrion Lannister",
-        thought: "I drink and I know things.",
-        prayer: "I wish for winter.",
-      },
-    });
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+          prayer: "I wish for winter.",
+        },
+      })
+    );
   });
 
   test("generates multiple mutations with named variables", () => {
@@ -867,8 +878,9 @@ describe("Mutation", () => {
       },
     ]);
 
-    expect(query).toEqual({
-      query: `mutation ($id0: ID, $id1: ID) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($id0: ID, $id1: ID) {
   delete0: deleteUser (id: $id0) {
     id
   }
@@ -876,11 +888,12 @@ describe("Mutation", () => {
     id
   }
 }`,
-      variables: {
-        id0: "user_1234",
-        id1: "user_5678",
-      },
-    });
+        variables: {
+          id0: "user_1234",
+          id1: "user_5678",
+        },
+      })
+    );
   });
 
   test("generates mutation with required variables", () => {
@@ -894,18 +907,20 @@ describe("Mutation", () => {
       fields: ["id"],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($name: String, $email: String!, $password: String!) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String, $email: String!, $password: String!) {
   userSignup (name: $name, email: $email, password: $password) {
     id
   }
 }`,
-      variables: {
-        name: "Jon Doe",
-        email: "jon.doe@example.com",
-        password: "123456",
-      },
-    });
+        variables: {
+          name: "Jon Doe",
+          email: "jon.doe@example.com",
+          password: "123456",
+        },
+      })
+    );
   });
 
   test("generates mutation custom type", () => {
@@ -921,16 +936,18 @@ describe("Mutation", () => {
       fields: ["id"],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($phone: PhoneNumber!) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($phone: PhoneNumber!) {
   userPhoneNumber (phone: $phone) {
     id
   }
 }`,
-      variables: {
-        phone: { prefix: "+91", number: "9876543210" },
-      },
-    });
+        variables: {
+          phone: { prefix: "+91", number: "9876543210" },
+        },
+      })
+    );
   });
 
   test("generate mutation without fields selection", () => {
@@ -938,12 +955,14 @@ describe("Mutation", () => {
       operation: "logout",
     });
 
-    expect(query).toEqual({
-      query: `mutation  {
-  logout  
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation  {
+  logout
 }`,
-      variables: {},
-    });
+        variables: {},
+      })
+    );
   });
 
   test("generates nested mutation operations without variables", () => {
@@ -958,14 +977,16 @@ describe("Mutation", () => {
       ],
     });
 
-    expect(query).toEqual({
-      query: `mutation  {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation  {
   namespaceField  {
     innerMutation  { id }
   }
 }`,
-      variables: {},
-    });
+        variables: {},
+      })
+    );
   });
 
   test("generates nested mutation operations with variables", () => {
@@ -982,14 +1003,16 @@ describe("Mutation", () => {
       ],
     });
 
-    expect(query).toEqual({
-      query: `mutation ($name: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($name: String) {
   namespaceField  {
     innerMutation (name: $name) { id }
   }
 }`,
-      variables: { name: "stringy" },
-    });
+        variables: { name: "stringy" },
+      })
+    );
   });
 
   test("generates multiple nested mutation operations with variables", () => {
@@ -1020,8 +1043,9 @@ describe("Mutation", () => {
       },
     ]);
 
-    expect(query).toEqual({
-      query: `mutation ($nameB: String, $nameA: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation ($nameB: String, $nameA: String) {
   namespaceField  {
     mutationA (nameA: $nameA) { id }
   }
@@ -1029,11 +1053,12 @@ describe("Mutation", () => {
     mutationB (nameB: $nameB) { id }
   }
 }`,
-      variables: { nameA: "A", nameB: "B" },
-    });
+        variables: { nameA: "A", nameB: "B" },
+      })
+    );
   });
 
-  test.only("generates mutation with operation name", () => {
+  test("generates mutation with operation name", () => {
     const query = queryBuilder.mutation(
       [
         {
@@ -1051,17 +1076,19 @@ describe("Mutation", () => {
       }
     );
 
-    expect(query).toEqual({
-      query: `mutation operation ($name: String, $thought: String) {
+    expect(trimQueryString(query)).toEqual(
+      trimQueryString({
+        query: `mutation operation ($name: String, $thought: String) {
       thoughtCreate (name: $name, thought: $thought) {
     id
   }
     }`,
-      variables: {
-        name: "Tyrion Lannister",
-        thought: "I drink and I know things.",
-      },
-    });
+        variables: {
+          name: "Tyrion Lannister",
+          thought: "I drink and I know things.",
+        },
+      })
+    );
   });
 });
 
